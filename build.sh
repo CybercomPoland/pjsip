@@ -1,11 +1,17 @@
 #!/bin/sh
 
+# INFO: Set SDKVERSION in opus.sh / opus_from_github.sh
+# INFO: If not possible to fetch opus from official site change opus to opus_from_github on bottom of this file
+# INFO: To choose PJSIP version set PJSIP_URL in pjsip.sh file
+
 # environment variables
 export OPENSSL_VERSION="1.1.1c" # specify the openssl version to use
-export PJSIP_VERSION="2.9"
+#export OPENSSL_VERSION="1.1.1h"
+export PJSIP_VERSION="2.10"
+#export PJSIP_VERSION="2.9"
 export OPUS_VERSION="1.3.1"
 export MACOS_MIN_SDK_VERSION="10.12"
-export IOS_MIN_SDK_VERSION="9.0"
+export IOS_MIN_SDK_VERSION="10.0"
 
 # see http://stackoverflow.com/a/3915420/318790
 function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
@@ -24,28 +30,30 @@ function download() {
 
 # openssl
 OPENSSL_DIR="${BUILD_DIR}/openssl"
-OPENSSL_ENABLED=
+OPENSSL_ENABLED=0
 function openssl() {
-    if [ ! -d "${OPENSSL_DIR}/lib/iOS" ] || [ ! -d "${OPENSSL_DIR}/lib/macOS" ]; then
+    if [ ! -d "${OPENSSL_DIR}/lib/iOS" ]; then
         if [ ! -d "${OPENSSL_DIR}" ]; then
             mkdir -p "${OPENSSL_DIR}"
         fi
         "${__DIR__}/openssl/openssl.sh" "--version=${OPENSSL_VERSION}" "--reporoot=${OPENSSL_DIR}" "--macos-min-sdk=${MACOS_MIN_SDK_VERSION}" "--ios-min-sdk=${IOS_MIN_SDK_VERSION}"
     else
-        echo "Using OpenSSL..."
+        echo "Using already builded OpenSSL..."
     fi
     
     OPENSSL_ENABLED=1
 }
 
+echo "${OPENSSL_DIR}"
+
 # opus
 OPUS_DIR="${BUILD_DIR}/opus"
-OPUS_ENABLED=
+OPUS_ENABLED=0
 function opus() {
     if [ ! -f "${OPUS_DIR}/dependencies/lib/libopus.a" ] || [ ! -d "${OPUS_DIR}/dependencies/include/opus/" ]; then
         "${__DIR__}/opus.sh" "${OPUS_DIR}"
     else
-        echo "Using OPUS..."
+        echo "Using already builded OPUS..."
     fi
     
     OPUS_ENABLED=1
@@ -58,5 +66,10 @@ function pjsip() {
 }
 
 openssl
+
 opus
+#use opus_from_github if opus webpage is not working/not able to fetch lib:
+#opus_from_github
+
 pjsip
+./copy_libs.sh

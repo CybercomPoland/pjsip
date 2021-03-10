@@ -14,7 +14,7 @@ function download() {
 
 DEVELOPER=$(xcode-select --print-path)
 
-IPHONEOS_DEPLOYMENT_VERSION=${IOS_MIN_SDK_VERSION:-"9.0"}
+IPHONEOS_DEPLOYMENT_VERSION=${IOS_MIN_SDK_VERSION:-"10.0"}
 IPHONEOS_PLATFORM=$(xcrun --sdk iphoneos --show-sdk-platform-path)
 IPHONEOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
 
@@ -26,7 +26,27 @@ OSX_PLATFORM=$(xcrun --sdk macosx --show-sdk-platform-path)
 OSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
 
 BASE_DIR="$1"
-PJSIP_URL="http://www.pjsip.org/release/${PJSIP_VERSION:-2.9}/pjproject-${PJSIP_VERSION:-2.9}.tar.bz2"
+
+# Select PJSIP source code
+# change PJSIP_VERSION="2.10" in build.sh
+#PJSIP_URL="https://codeload.github.com/pjsip/pjproject/zip/master"
+
+# Old 2.9
+#PJSIP_URL="https://github.com/pjsip/pjproject/archive/2.9.tar.gz"
+#PJSIP_URL="http://www.pjsip.org/release/2.9/pjproject-2.9.tar.bz2"
+
+# Latest 2.10 official relase
+#PJSIP_URL="https://github.com/pjsip/pjproject/archive/2.10.tar.gz"
+
+# master branch of pjsip on github
+PJSIP_URL="https://codeload.github.com/pjsip/pjproject/zip/master"
+
+# Too build app from local directory (fro example latest master)
+# create zip archive and enter path with file://
+# example file:///Users/my.user/my_pjsip.zip
+#PJSIP_URL="file://<local file containing compressed repository>.zip"
+
+
 PJSIP_DIR="$1/src"
 LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
@@ -93,8 +113,9 @@ function configure () {
 			echo "#define PJMEDIA_VIDEO_DEV_HAS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
 			echo "#define PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES 1" >> "${PJSIP_CONFIG_PATH}"
 			echo "#define PJMEDIA_VIDEO_DEV_HAS_IOS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
-			echo "#include <OpenGLES/ES3/glext.h>" >> "${PJSIP_CONFIG_PATH}"
+			#echo "#include <OpenGLES/ES3/glext.h>" >> "${PJSIP_CONFIG_PATH}"
 		fi
+        #echo "#include <pj/config_site_sample.h>" >> "${PJSIP_CONFIG_PATH}"
 	fi
 
 	if [[ ${HAS_VIDEO} ]]; then
@@ -128,10 +149,13 @@ function configure () {
 	fi
 
 
+
 	if [[ ${OPENSSL_PREFIX} ]]; then
+        echo "OPENSSL_PREFIX: ${OPENSSL_PREFIX}"
 		CONFIGURE="${CONFIGURE} --with-ssl=${OPENSSL_PREFIX}"
 	fi
 	if [[ ${OPUS_PREFIX} ]]; then
+        echo "OPUS_PREFIX: ${OPUS_PREFIX}"
 		CONFIGURE="${CONFIGURE} --with-opus=${OPUS_PREFIX}"
 	fi
 
@@ -256,15 +280,18 @@ function do_lipo() {
 
 download "${PJSIP_URL}" "${PJSIP_DIR}"
 
-
-build "i386" "${IPHONESIMULATOR_SDK}" "ios"
-build "x86_64" "${IPHONESIMULATOR_SDK}" "ios"
+# Limit build time by excluding not used architecture - for binal build for release include all that may be needed!
+#build "i386" "${IPHONESIMULATOR_SDK}" "ios"
+#build "x86_64" "${IPHONESIMULATOR_SDK}" "ios"
 build "armv7" "${IPHONEOS_SDK}" "ios"
-build "armv7s" "${IPHONEOS_SDK}" "ios"
+#build "armv7s" "${IPHONEOS_SDK}" "ios"
 build "arm64" "${IPHONEOS_SDK}" "ios"
 
 # We don't support x86 for macOS.
-build "x86_64" "${OSX_SDK}" "macos"
+#build "x86_64" "${OSX_SDK}" "macos"
 
-do_lipo "ios" "i386" "x86_64" "armv7" "armv7s" "arm64"
-do_lipo "macos" "x86_64"
+# Join builded libs into one "FAT" library containing code for more than one architecture
+do_lipo "ios" "arm64" "armv7"
+#do_lipo "ios" "armv7" "armv7s" "arm64"
+#do_lipo "ios" "i386" "x86_64" "armv7" "armv7s" "arm64"
+#do_lipo "macos" "x86_64"

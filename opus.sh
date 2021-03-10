@@ -23,7 +23,8 @@
 #  Choose your libopus version and your currently-installed iOS SDK version:
 #
 VERSION=${OPUS_VERSION:-"1.3.1"}
-SDKVERSION="12.2"
+SDKVERSION="14.3"
+#SDKVERSION="13.4"
 MINIOSVERSION=${IOS_MIN_SDK_VERSION:-"8.0"}
 
 ###########################################################################
@@ -47,7 +48,9 @@ fi
 
 # No need to change this since xcode build will only compile in the
 # necessary bits from the libraries we create
-ARCHS="armv7 armv7s arm64 i386 x86_64"
+#ARCHS="armv7 armv7s arm64 i386 x86_64"
+#ARCHS="armv7 armv7s arm64 i386 x86_64"
+ARCHS="armv7 arm64"
 
 DEVELOPER=`xcode-select -print-path`
 #DEVELOPER="/Applications/Xcode.app/Contents/Developer"
@@ -86,6 +89,7 @@ echo "Using opus-${VERSION}.tar.gz"
 
 tar zxf opus-${VERSION}.tar.gz
 cd "${SRCDIR}/opus-${VERSION}"
+pwd
 
 set +e # don't bail out of bash script if ccache doesn't exist
 CCACHE=`which ccache`
@@ -115,7 +119,7 @@ do
     fi
     
     mkdir -p "${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
-    
+
     ./configure \
     --enable-float-approx --disable-shared --enable-static \
     --with-pic --disable-extra-programs --disable-doc ${EXTRA_CONFIG} \
