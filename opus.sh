@@ -24,8 +24,7 @@
 #
 VERSION=${OPUS_VERSION:-"1.3.1"}
 SDKVERSION="14.3"
-#SDKVERSION="13.4"
-MINIOSVERSION=${IOS_MIN_SDK_VERSION:-"8.0"}
+MINIOSVERSION=${IOS_MIN_SDK_VERSION:-"10.0"}
 
 ###########################################################################
 #
@@ -48,9 +47,8 @@ fi
 
 # No need to change this since xcode build will only compile in the
 # necessary bits from the libraries we create
-#ARCHS="armv7 armv7s arm64 i386 x86_64"
-#ARCHS="armv7 armv7s arm64 i386 x86_64"
-ARCHS="armv7 arm64"
+ARCHS="armv7 armv7s arm64 i386 x86_64"
+#ARCHS="armv7 arm64"
 
 DEVELOPER=`xcode-select -print-path`
 #DEVELOPER="/Applications/Xcode.app/Contents/Developer"

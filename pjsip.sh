@@ -281,17 +281,16 @@ function do_lipo() {
 download "${PJSIP_URL}" "${PJSIP_DIR}"
 
 # Limit build time by excluding not used architecture - for binal build for release include all that may be needed!
-#build "i386" "${IPHONESIMULATOR_SDK}" "ios"
-#build "x86_64" "${IPHONESIMULATOR_SDK}" "ios"
+build "i386" "${IPHONESIMULATOR_SDK}" "ios"
+build "x86_64" "${IPHONESIMULATOR_SDK}" "ios"
 build "armv7" "${IPHONEOS_SDK}" "ios"
-#build "armv7s" "${IPHONEOS_SDK}" "ios"
+build "armv7s" "${IPHONEOS_SDK}" "ios"
 build "arm64" "${IPHONEOS_SDK}" "ios"
 
 # We don't support x86 for macOS.
 #build "x86_64" "${OSX_SDK}" "macos"
 
 # Join builded libs into one "FAT" library containing code for more than one architecture
-do_lipo "ios" "arm64" "armv7"
-#do_lipo "ios" "armv7" "armv7s" "arm64"
-#do_lipo "ios" "i386" "x86_64" "armv7" "armv7s" "arm64"
+#do_lipo "ios" "arm64" "armv7"
+do_lipo "ios" "i386" "x86_64" "armv7" "armv7s" "arm64"
 #do_lipo "macos" "x86_64"

@@ -29,18 +29,18 @@ DEFAULTVERSION="1.1.0i"
 
 # Default (=full) set of architectures (OpenSSL <= 1.0.2) or targets (OpenSSL >= 1.1.0) to build
 #DEFAULTARCHS="ios_x86_64 ios_arm64 ios_armv7s ios_armv7 tv_x86_64 tv_arm64 mac_x86_64"
-#DEFAULTTARGETS="ios-sim-cross-x86_64 ios64-cross-arm64 ios-cross-armv7s ios-cross-armv7 tvos-sim-cross-x86_64 tvos64-cross-arm64 macos64-x86_64"
+DEFAULTTARGETS="ios-sim-cross-x86_64 ios64-cross-arm64 ios-cross-armv7s ios-cross-armv7 tvos-sim-cross-x86_64 tvos64-cross-arm64 removed macos64-x86_64"
 #DEFAULTARCHS="ios_x86_64 ios_arm64 tv_x86_64 tv_arm64 watchos_armv7k watchos-arm64_32"
-DEFAULTARCHS="ios_arm64 ios_armv7"
+#DEFAULTARCHS="ios_arm64 ios_armv7"
 
 #removed mac_x86_64
 
 #DEFAULTARCHS="ios_arm64"
 
 #DEFAULTTARGETS="ios-sim-cross-x86_64 ios64-cross-arm64 tvos-sim-cross-x86_64 tvos64-cross-arm64 macos64-x86_64 watchos-cross-armv7k watchos-cross-arm64_32"
-#DEFAULTTARGETS="ios-sim-cross-i386 ios-sim-cross-x86_64 ios64-cross-arm64 ios-cross-armv7 ios-cross-armv7s" # only targeting macOS and iOS for integration with pjsip (do we really need i386???)
+DEFAULTTARGETS="ios-sim-cross-i386 ios-sim-cross-x86_64 ios64-cross-arm64 ios-cross-armv7 ios-cross-armv7s" # only targeting macOS and iOS for integration with pjsip (do we really need i386???)
 #removed macos64-x86_64
-DEFAULTTARGETS="ios64-cross-arm64 ios-cross-armv7"
+#DEFAULTTARGETS="ios64-cross-arm64 ios-cross-armv7"
 
 # Init optional env variables (use available variable or default to empty string)
 CURL_OPTIONS="${CURL_OPTIONS:-}"
